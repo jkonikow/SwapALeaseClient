@@ -1,0 +1,23 @@
+{
+  "name": "lease_transfer_monitor",
+  "version": "1.0.0",
+  "description": "A monitor for detecting new lease transfer opportunities",
+  "main": "index.js",
+  "scripts": {
+    "build":"tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jkon1513/lease_transfer_monitor.git"
+  },
+  "author": "jkon1513",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jkon1513/lease_transfer_monitor/issues"
+  },
+  "homepage": "https://github.com/jkon1513/lease_transfer_monitor#readme",
+  "devDependencies": {
+    "typescript": "^4.7.3"
+  }
+}
