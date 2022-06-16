@@ -62,32 +62,16 @@ export default class GetListingsRequest {
         return this.zip;
     }
 
-    public hasMaxDistance(): boolean {
-        return this.maxDistanceFromZip === undefined;
-    }
-
     public getMaxDistance(): string|undefined {
         return this.maxDistanceFromZip;
-    }
-
-    public hasMinMilesPerMonth(): boolean {
-        return this.minMilesPerMonth === undefined;
     }
 
     public getMinMilesPerMonth(): string|undefined {
         return this.minMilesPerMonth;
     }
 
-    public hasMaxMonthsRemaining(): boolean {
-        return this.maxMonthsRemaining == undefined;
-    }
-
     public getMaxMonthsRemaining(): string|undefined {
         return this.maxMonthsRemaining;
-    }
-
-    public hasMaxPricePerMonth(): boolean {
-        return this.maxPricePerMonth == undefined;
     }
 
     public getMaxPricePerMonth(): string|undefined {
