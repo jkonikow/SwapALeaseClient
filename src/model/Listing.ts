@@ -1,4 +1,4 @@
-export class Listing {
+export default class Listing {
     private make: string;
     private model: string;
     private imageUrl: string;

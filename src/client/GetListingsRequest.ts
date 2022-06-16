@@ -40,7 +40,7 @@ class GetListingsRequestBuilder {
     }
 }
 
-class GetListingsRequest {
+export default class GetListingsRequest {
     private readonly zip: string;
     private readonly maxDistanceFromZip?: string;
     private readonly minMilesPerMonth?: string;
