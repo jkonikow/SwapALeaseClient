@@ -52,11 +52,11 @@ export class ListingDetailsHTML {
     private constructor(){}
     public static readonly LISTING_DETAILS_SELECTOR: string = ".listing-details > div > ul";
     public static readonly MONTHS_REMAINING_SELECTOR: string  = "li.months";
-    public static readonly PRICE_PER_MONTH_SELECTOR: string  = "li.payment";
+    public static readonly COST_PER_MONTH_SELECTOR: string  = "li.payment";
 }
 export type ListingDetails = {
     monthsRemaining: string,
-    pricePerMonth: string
+    costPerMonth: string
 }
 
 /*
