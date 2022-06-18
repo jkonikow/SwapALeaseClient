@@ -1,31 +1,39 @@
 export default class Listing {
-    private make: string;
-    private model: string;
+    private title: string;
+    private vehicleInfo: VehicleInfo;
+    private leaseInfo: LeaseInfo;
     private imageUrl: string;
-    private costPerMonth: string;
-    private monthsRemaining: string;
-    private downPayment: string;
     private location: string;
     private listingUrl: string;
 
-    constructor(make: string, model: string, imageUrl: string, costPerMonth: string, 
-        monthisRemaining: string, downPayment: string, location: string, listingUrl: string) {
-            this.make = make;
-            this.model = model;
-            this.imageUrl = imageUrl;
-            this.costPerMonth = costPerMonth;
-            this.monthsRemaining = monthisRemaining;
-            this.downPayment = downPayment;
-            this.location = location;
-            this.listingUrl = listingUrl;
+    constructor(title: string, vehicleInfo: VehicleInfo, leaseInfo: LeaseInfo, 
+        imageUrl: string,  location: string, listingUrl: string) {
+        this.title = title;
+        this.vehicleInfo = vehicleInfo;
+        this.leaseInfo = leaseInfo;    
+        this.imageUrl = imageUrl;
+        this.location = location;
+        this.listingUrl = listingUrl;
+    }
+
+    public getTitle(): string {
+        return this.title;
     }
 
     public getMake(): string {
-        return this.make;
+        return this.vehicleInfo.make;
     }
 
     public getModel(): string {
-        return this.model;
+        return this.vehicleInfo.model;
+    }
+
+    public getYear(): string {
+        return this.vehicleInfo.year;
+    }
+
+    public getColor(): string {
+        return this.vehicleInfo.color;
     }
 
     public getImageUrl(): string {
@@ -33,15 +41,15 @@ export default class Listing {
     }
 
     public getCostPerMonth(): string {
-        return this.costPerMonth;
+        return this.leaseInfo.costPerMonth;
     }
 
     public getMonthsRemaining(): string {
-        return this.monthsRemaining;
+        return this.leaseInfo.monthsRemaining;
     }
 
     public getDownPayment(): string {
-        return this.downPayment;
+        return this.leaseInfo.downPayment;
     }
 
     public getLocation(): string {
@@ -52,4 +60,17 @@ export default class Listing {
         return this.listingUrl;
     }
 
+}
+
+export type VehicleInfo = {
+    year: string,
+    make: string, 
+    model: string,
+    color: string
+}
+
+export type LeaseInfo = {
+    costPerMonth: string,
+    monthsRemaining: string,
+    downPayment: string
 }
