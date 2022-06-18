@@ -48,8 +48,8 @@ export default class Listing {
         return this.leaseInfo.monthsRemaining;
     }
 
-    public getDownPayment(): string {
-        return this.leaseInfo.downPayment;
+    public getMilesPerMonth(): string {
+        return this.leaseInfo.milesPerMonth;
     }
 
     public getLocation(): string {
@@ -72,5 +72,5 @@ export type VehicleInfo = {
 export type LeaseInfo = {
     costPerMonth: string,
     monthsRemaining: string,
-    downPayment: string
+    milesPerMonth: string
 }
