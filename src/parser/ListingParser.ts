@@ -6,7 +6,8 @@ import {
     ListingInfo, ListingInfoHTML, 
     ListingImage, ListingImageHTML
 } from "../model/Html";
-import { title } from "process";
+
+const HTML_PARSING_EXCEPTION = "HtmlParsingException";
 
 export default class ListingParser {
     public parseListings(html: string): Listing[] { 
@@ -15,60 +16,99 @@ export default class ListingParser {
         const $ = cheerio.load(html);
         const listingHtml = $("div[itemtype='http://schema.org/Product']");
         
-        listingHtml.each((idx: number, element: cheerio.Element) => {
-            const listingInfo: ListingInfo = this.parseListingInfo($, element);
-            const listingDetails: ListingDetails = this.parseListingDetails($, element);
-            const listingImage: ListingImage = this.parseListingImage($, element);
+        try {
+            listingHtml.each((idx: number, element: cheerio.Element) => {
+                const listingInfo: ListingInfo = this.parseListingInfo($, element);
+                const listingDetails: ListingDetails = this.parseListingDetails($, element);
+                const listingImage: ListingImage = this.parseListingImage($, element);
+    
+                const vehicleInfo: VehicleInfo = this.buildVehicleInfo(listingInfo);
+                const leaseInfo: LeaseInfo = this.buildLeaseInfo(listingInfo, listingDetails);
+                const {title, location} = listingInfo;
+                const listingUrl = this.buildListingUrl(listingInfo);
+                
+                listings.push(new Listing(title, vehicleInfo, leaseInfo, listingImage.url, location, listingUrl));
+            })
+            return listings;
+        } catch(e) {
+            if(e instanceof Error && e.name === HTML_PARSING_EXCEPTION) {
+                console.warn(`${e.message}. Proceeding with next listing....`);
+            }
 
-            const vehicleInfo: VehicleInfo = this.buildVehicleInfo(listingInfo);
-            const leaseInfo: LeaseInfo = this.buildLeaseInfo(listingInfo, listingDetails);
-            const {title, location, listingPath} = listingInfo;
-            const listingUrl = this.buildListingUrl(listingPath);
-            
-            listings.push(new Listing(title, vehicleInfo, leaseInfo, listingImage.url, location, listingUrl));
-        })
-
-        return listings;
+            throw e;
+        }
     }
 
 
     private parseListingInfo($: cheerio.Root, contextRoot: cheerio.Element): ListingInfo {
-        const infoHtml = $(ListingInfoHTML.LISTING_INFO_SELECTOR, contextRoot);
-        const info: string[] = infoHtml
-            .map((idx, element) => $(element).text().trim())
-            .get();
-        const location: string = info[ListingInfoHTML.LOCATION_INDEX];
-        const color: string = info[ListingInfoHTML.EXTERIOR_COLOR_INDEX];
-        const milesPerMonth = info[ListingInfoHTML.MILES_PER_MONTH_INDEX];
-        
-        const titleHtml = $(ListingInfoHTML.LISTING_TITLE_SELECTOR, contextRoot);
-        const title = titleHtml.text().trim();
-        // TODO: better way to handle this
-        const listingPath: string = titleHtml.attr("href") ?? "";
-
-        return {
-            title,
-            location,
-            color,
-            milesPerMonth,
-            listingPath
-        };
+        try {
+            const infoHtml = $(ListingInfoHTML.LISTING_INFO_SELECTOR, contextRoot);
+            const info: string[] = infoHtml
+                .map((idx, element) => $(element).text().trim())
+                .get();
+            const location: string = info[ListingInfoHTML.LOCATION_INDEX];
+            const color: string = info[ListingInfoHTML.EXTERIOR_COLOR_INDEX];
+            const milesPerMonth = info[ListingInfoHTML.MILES_PER_MONTH_INDEX];
+            
+            const titleHtml = $(ListingInfoHTML.LISTING_TITLE_SELECTOR, contextRoot);
+            const title = titleHtml.text().trim();
+            // TODO: better way to handle this
+            const listingPath: string = titleHtml.attr("href") ?? "";
+    
+            return {
+                title,
+                location,
+                color,
+                milesPerMonth,
+                listingPath
+            };
+        } catch(e) {
+            const msg: string =   e instanceof Error 
+                ?  `Failure parsing ListingInfo HTML: ${e.message}`
+                : `Non Error failure parsing ListingInfo HTML: ${e}`;
+            const exception: Error = new Error(msg);
+            exception.name = HTML_PARSING_EXCEPTION;
+            
+            throw exception;
+        }
     }
 
     private parseListingDetails($: cheerio.Root, contextRoot: cheerio.Element): ListingDetails {
-        const detailsRoot = $(ListingDetailsHTML.LISTING_DETAILS_SELECTOR, contextRoot);
-        const monthsRemaining: string = $(ListingDetailsHTML.MONTHS_REMAINING_SELECTOR, detailsRoot).text().trim();
-        const pricePerMonth: string = $(ListingDetailsHTML.COST_PER_MONTH_SELECTOR, detailsRoot).text().trim();
-
-        return {
-            monthsRemaining,
-            costPerMonth: pricePerMonth
-        };
+        try {
+            const detailsRoot = $(ListingDetailsHTML.LISTING_DETAILS_SELECTOR, contextRoot);
+            const monthsRemaining: string = $(ListingDetailsHTML.MONTHS_REMAINING_SELECTOR, detailsRoot).text().trim();
+            const pricePerMonth: string = $(ListingDetailsHTML.COST_PER_MONTH_SELECTOR, detailsRoot).text().trim();
+    
+            return {
+                monthsRemaining,
+                costPerMonth: pricePerMonth
+            };
+        } catch(e) {
+            const msg: string =   e instanceof Error 
+                ?  `Failure parsing ListingDetails HTML: ${e.message}`
+                : `Non Error failure parsing ListingDetails HTML: ${e}`;
+            const exception: Error = new Error(msg);
+            exception.name = HTML_PARSING_EXCEPTION;
+            
+            throw exception;
+        }
     }
 
     private parseListingImage($: cheerio.Root, contextRoot: cheerio.Element): ListingImage {
-        const url: string = $(ListingImageHTML.LISTING_IMAGE_SELECTOR, contextRoot).attr("src") ?? "";
-        return { url };
+        try {
+            // TODO: better way to handlie this
+            const url: string = $(ListingImageHTML.LISTING_IMAGE_SELECTOR, contextRoot).attr("src") ?? "";
+            
+            return { url };
+        } catch(e) {
+            const msg: string =   e instanceof Error 
+                ?  `Failure parsing ListingImage HTML: ${e.message}`
+                : `Non Error failure parsing ListingImage HTML: ${e}`;
+            const exception: Error = new Error(msg);
+            exception.name = HTML_PARSING_EXCEPTION;
+            
+            throw exception;
+        }
     }
 
     private buildVehicleInfo(info: ListingInfo): VehicleInfo {
@@ -99,7 +139,13 @@ export default class ListingParser {
         };
     }
 
-    private buildListingUrl(listingPath: string) {
+    private buildListingUrl(info: ListingInfo) {
+        const {listingPath} = info;
+        if (!listingPath) {
+            console.warn(`no path was parsed for listing: ${info.title}`);
+            return "none";
+        }
+
         return `${BASE_URL}${listingPath}`;
     }
 }

@@ -47,44 +47,6 @@ export default class SwapALeaseClient {
         })
     }
 
-    public test(url: string): void {
-        fetch(url, {
-            method: "GET", 
-        })
-        .then(response => response.json())
-        .then(json => {
-            console.info(`fetching url with no custom headers: ${url}`);
-            console.info(json);
-        })
-        .catch(e => {
-            if (e instanceof Error) {
-                throw new Error(`Failure connecting to swap a lease: ${e.message}`);
-            }
-
-            throw new Error(`Non-Error failure connecting to swap a lease: ${e}`);
-        })
-
-        const headers: HttpHeaders = HttpUtils.getRandomHeaders();
-        fetch(url, {
-            method: "GET", 
-            headers: headers
-        })
-        .then(response => response.json())
-        .then(json => {
-            console.info(`fetching url with random headers: ${url}`);
-            console.info(json);
-        })
-        .catch(e => {
-            if (e instanceof Error) {
-                throw new Error(`Failure connecting to swap a lease: ${e.message}`);
-            }
-
-            throw new Error(`Non-Error failure connecting to swap a lease: ${e}`);
-        })
-
-        
-    }
-
     private buildUrl(request: GetListingsRequest): string {
         const location = this.buildQueryParamWithArg(this.ZIP_QUERY_PARAM, request.getZip());
         const maxDistance = this.buildQueryParamWithArg(this.MAX_DISTANCE_QUERY_PARAM, request.getMaxDistance());
