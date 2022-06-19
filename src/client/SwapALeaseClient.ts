@@ -4,6 +4,7 @@ import Listing from "../model/Listing";
 import GetListingsRequest from "./GetListingsRequest";
 import GetListingsResponse from "./GetListingsResponse";
 import { BASE_URL } from "../Constants";
+import HttpUtils, {HttpHeaders} from "./HttpUtils";
 
 
 
@@ -31,7 +32,11 @@ export default class SwapALeaseClient {
 
     private fetchHtml(url: string): Promise<string> {
         console.info(`Querying swap a lease url: ${url}`);
-        return fetch(url)
+        const headers: HttpHeaders = HttpUtils.getRandomHeaders();
+        return fetch(url, {
+            method: "GET", 
+            headers: headers
+        })
         .then(html => html.text())
         .catch(e => {
             if (e instanceof Error) {
@@ -40,6 +45,44 @@ export default class SwapALeaseClient {
 
             throw new Error(`Non-Error failure connecting to swap a lease: ${e}`);
         })
+    }
+
+    public test(url: string): void {
+        fetch(url, {
+            method: "GET", 
+        })
+        .then(response => response.json())
+        .then(json => {
+            console.info(`fetching url with no custom headers: ${url}`);
+            console.info(json);
+        })
+        .catch(e => {
+            if (e instanceof Error) {
+                throw new Error(`Failure connecting to swap a lease: ${e.message}`);
+            }
+
+            throw new Error(`Non-Error failure connecting to swap a lease: ${e}`);
+        })
+
+        const headers: HttpHeaders = HttpUtils.getRandomHeaders();
+        fetch(url, {
+            method: "GET", 
+            headers: headers
+        })
+        .then(response => response.json())
+        .then(json => {
+            console.info(`fetching url with random headers: ${url}`);
+            console.info(json);
+        })
+        .catch(e => {
+            if (e instanceof Error) {
+                throw new Error(`Failure connecting to swap a lease: ${e.message}`);
+            }
+
+            throw new Error(`Non-Error failure connecting to swap a lease: ${e}`);
+        })
+
+        
     }
 
     private buildUrl(request: GetListingsRequest): string {
