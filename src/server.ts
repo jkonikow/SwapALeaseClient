@@ -23,5 +23,3 @@ const printListings = (listings: Listing[]) : void => {
     console.log("listings: ");
     console.log(listings);
 }
-
-export const sayHello =  (name: string): void => console.log(name);
