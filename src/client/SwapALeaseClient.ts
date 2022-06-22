@@ -19,8 +19,10 @@ export default class SwapALeaseClient {
 
     private readonly parser: ListingParser;
 
-    constructor(parser: ListingParser) {
-        this.parser = parser;
+    constructor(parser?: ListingParser) {
+        // enabling constructor injection here for testing
+        // but should look to see if there is a better practice
+        this.parser = parser ?? new ListingParser();
     }
 
     public async getListings(request: GetListingsRequest): Promise<GetListingsResponse> {
