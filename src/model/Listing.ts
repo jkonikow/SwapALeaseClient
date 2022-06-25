@@ -60,6 +60,18 @@ export default class Listing {
         return this.listingUrl;
     }
 
+    public equals(other: Listing): boolean {
+        return this == other || 
+        (this.getTitle() === other.getTitle() &&
+        this.getColor() === other.getColor() &&
+        this.getLocation() === other.getLocation() &&
+        this.getMake() === other.getMake() &&
+        this.getModel() === other.getModel() &&
+        this.getYear() === other.getYear() &&
+        this.getCostPerMonth() === other.getCostPerMonth() &&
+        this.getMilesPerMonth() === other.getMilesPerMonth() &&
+        this.getMonthsRemaining() === other.getMonthsRemaining());
+    }
 }
 
 export type VehicleInfo = {
