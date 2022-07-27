@@ -4,6 +4,7 @@ class GetListingsRequestBuilder {
     private  minMilesPerMonth?: string;
     private  maxMonthsRemaining?: string;
     private  maxPricePerMonth?: string;
+    private prefferredMakes?: string[];
 
     withZip(zip: string): GetListingsRequestBuilder {
         this.zip = zip;
@@ -30,13 +31,18 @@ class GetListingsRequestBuilder {
         return this;
     }
 
+    withPrefferredMakes(prefferredMakes: string[]): GetListingsRequestBuilder {
+        this.prefferredMakes = prefferredMakes;
+        return this;
+    }
+
     build(): GetListingsRequest {
         if (!this.zip) {
             throw new Error("zipcode is required for fetching lease listings");
         }
         
         return new GetListingsRequest(this.zip, this.maxDistanceFromZip, this.minMilesPerMonth, 
-            this.maxMonthsRemaining, this.maxPricePerMonth);
+            this.maxMonthsRemaining, this.maxPricePerMonth, this.prefferredMakes);
     }
 }
 
@@ -46,16 +52,18 @@ export default class GetListingsRequest {
     private readonly minMilesPerMonth?: string;
     private readonly maxMonthsRemaining?: string;
     private readonly maxPricePerMonth?: string;
+    private readonly prefferredMakes?: string[];
 
     //TODO: should be a way to use fluent builder patern without making 
     // the product constructor public
     public constructor(zip: string, maxDistanceFromZip?: string, minMilesPerMonth?: string, 
-        maxMonthsRemaining?: string, maxPricePerMonth?: string) {
+        maxMonthsRemaining?: string, maxPricePerMonth?: string, preferredMakes?: string[]) {
             this.zip = zip;
             this.maxDistanceFromZip = maxDistanceFromZip;
             this.minMilesPerMonth = minMilesPerMonth;
             this.maxMonthsRemaining = maxMonthsRemaining;
             this.maxPricePerMonth = maxPricePerMonth;
+            this.prefferredMakes = preferredMakes;
     }
 
     public getZip(): string {
