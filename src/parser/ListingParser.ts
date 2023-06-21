@@ -1,13 +1,13 @@
 import cheerio from "cheerio";
 import Listing, {VehicleInfo, LeaseInfo} from "../model/Listing";
-import { BASE_URL } from "../Constants";
-import { 
+import {
     ListingDetails, ListingDetailsHTML, 
     ListingInfo, ListingInfoHTML, 
     ListingImage, ListingImageHTML
 } from "../model/Html";
 
 const HTML_PARSING_EXCEPTION = "HtmlParsingException";
+const BASE_LISTING_URL: string = "https://www.swapalease.com/lease/search.aspx";
 
 export default class ListingParser {
     public parseListings(html: string): Listing[] { 
@@ -146,6 +146,6 @@ export default class ListingParser {
             return "none";
         }
 
-        return `${BASE_URL}${listingPath}`;
+        return `${BASE_LISTING_URL}${listingPath}`;
     }
 }

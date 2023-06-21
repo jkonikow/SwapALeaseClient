@@ -12,6 +12,7 @@ const request: GetListingsRequest = GetListingsRequest.builder()
                                         .withMaxMonthsRemaining('24')
                                         .withMaxPricePerMonth('650')
                                         .withZip('07675')
+                                        .withPreferredMakes(["audi", "bmw"])
                                         .build();
 client.getListings(request)
 .then((response: GetListingsResponse) => printListings(response.getListings()))

@@ -4,7 +4,7 @@ class GetListingsRequestBuilder {
     private  minMilesPerMonth?: string;
     private  maxMonthsRemaining?: string;
     private  maxPricePerMonth?: string;
-    private prefferredMakes?: string[];
+    private preferredMakes?: string[];
 
     withZip(zip: string): GetListingsRequestBuilder {
         this.zip = zip;
@@ -31,8 +31,8 @@ class GetListingsRequestBuilder {
         return this;
     }
 
-    withPrefferredMakes(prefferredMakes: string[]): GetListingsRequestBuilder {
-        this.prefferredMakes = prefferredMakes;
+    withPreferredMakes(prefferredMakes: string[]): GetListingsRequestBuilder {
+        this.preferredMakes = prefferredMakes;
         return this;
     }
 
@@ -42,7 +42,7 @@ class GetListingsRequestBuilder {
         }
         
         return new GetListingsRequest(this.zip, this.maxDistanceFromZip, this.minMilesPerMonth, 
-            this.maxMonthsRemaining, this.maxPricePerMonth, this.prefferredMakes);
+            this.maxMonthsRemaining, this.maxPricePerMonth, this.preferredMakes);
     }
 }
 
@@ -52,7 +52,7 @@ export default class GetListingsRequest {
     private readonly minMilesPerMonth?: string;
     private readonly maxMonthsRemaining?: string;
     private readonly maxPricePerMonth?: string;
-    private readonly prefferredMakes?: string[];
+    private readonly preferredMakes?: string[];
 
     //TODO: should be a way to use fluent builder patern without making 
     // the product constructor public
@@ -63,7 +63,7 @@ export default class GetListingsRequest {
             this.minMilesPerMonth = minMilesPerMonth;
             this.maxMonthsRemaining = maxMonthsRemaining;
             this.maxPricePerMonth = maxPricePerMonth;
-            this.prefferredMakes = preferredMakes;
+            this.preferredMakes = preferredMakes;
     }
 
     public getZip(): string {
@@ -84,6 +84,10 @@ export default class GetListingsRequest {
 
     public getMaxPricePerMonth(): string|undefined {
         return this.maxPricePerMonth;
+    }
+
+    public getPreferredMakes(): string[] {
+        return this.preferredMakes ?? [];
     }
     
     public static builder() {

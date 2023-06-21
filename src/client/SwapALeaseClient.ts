@@ -3,10 +3,7 @@ import ListingParser from "../parser/ListingParser";
 import Listing from "../model/Listing";
 import GetListingsRequest from "./GetListingsRequest";
 import GetListingsResponse from "./GetListingsResponse";
-import { BASE_URL } from "../Constants";
 import HttpUtils, {HttpHeaders} from "./HttpUtils";
-
-
 
 export default class SwapALeaseClient {
     private readonly ZIP_QUERY_PARAM: string = "zip";
@@ -25,10 +22,12 @@ export default class SwapALeaseClient {
         this.parser = parser ?? new ListingParser();
     }
 
+    //TODO: Can we fetch listings for makes in parallel?
     public async getListings(request: GetListingsRequest): Promise<GetListingsResponse> {
-        const url: string = this.buildUrl(request);
-        const html: string = await this.fetchHtml(url)
-        const listings: Listing[] = this.parser.parseListings(html);
+        const urls: string[] = this.buildUrls(request);
+        const allHtml: string[] = await Promise.all(urls.map(url => this.fetchHtml(url)));
+        const listings: Listing[] = allHtml.flatMap(html => this.parser.parseListings(html));
+
         return new GetListingsResponse(listings);
     }
 
@@ -49,16 +48,26 @@ export default class SwapALeaseClient {
         })
     }
 
-    private buildUrl(request: GetListingsRequest): string {
+    private buildUrls(request: GetListingsRequest): string[] {
         const location = this.buildQueryParamWithArg(this.ZIP_QUERY_PARAM, request.getZip());
         const maxDistance = this.buildQueryParamWithArg(this.MAX_DISTANCE_QUERY_PARAM, request.getMaxDistance());
         const minMilesPerMonth: string = this.buildQueryParamWithArg(this.MIN_MILES_PER_MONTH_QUERY_PARAM, request.getMinMilesPerMonth());
         const maxMonthRemaining: string  = this.buildQueryParamWithArg(this.MAX_MONTHS_REMAINING_QUERY_PARAM, request.getMaxMonthsRemaining());
         const maxPricePerMonth: string = this.buildQueryParamWithArg(this.MAX_PRICE_PER_MONTH_QUERY_PARAM, request.getMaxPricePerMonth());
+        const preferredMakes: string[] = request.getPreferredMakes();
 
-        return `${BASE_URL}?${location}&${maxDistance}&${minMilesPerMonth}&${maxMonthRemaining}&${maxPricePerMonth}&${this.NEWEST_LISTING_SORT_MODE}&${this.LEASE_TRANSFER_ONLY}`;
+        return preferredMakes.map(make =>
+            `https://www.swapalease.com/lease/${make}/search.aspx`+
+                `?${location}`+
+                `&${maxDistance}`+
+                `&${minMilesPerMonth}`+
+                `&${maxMonthRemaining}`+
+                `&${maxPricePerMonth}`+
+                `&${this.NEWEST_LISTING_SORT_MODE}`+
+                `&${this.LEASE_TRANSFER_ONLY}`
+        );
     }
-    
+
     /**
      * if the query argument was provided build the query string otherwise return empty.
      */
