@@ -56,16 +56,31 @@ export default class SwapALeaseClient {
         const maxPricePerMonth: string = this.buildQueryParamWithArg(this.MAX_PRICE_PER_MONTH_QUERY_PARAM, request.getMaxPricePerMonth());
         const preferredMakes: string[] = request.getPreferredMakes();
 
-        return preferredMakes.map(make =>
-            `https://www.swapalease.com/lease/${make}/search.aspx`+
-                `?${location}`+
-                `&${maxDistance}`+
-                `&${minMilesPerMonth}`+
-                `&${maxMonthRemaining}`+
-                `&${maxPricePerMonth}`+
-                `&${this.NEWEST_LISTING_SORT_MODE}`+
-                `&${this.LEASE_TRANSFER_ONLY}`
-        );
+        const urls: string[] = [];
+        if (preferredMakes.length > 0) {
+            preferredMakes.forEach(make => {
+                const baseUrlForMake: string = `https://www.swapalease.com/lease/${make}/search.aspx`;
+                urls.push(this.buildUrl(baseUrlForMake, location, maxDistance, minMilesPerMonth, maxMonthRemaining, maxPricePerMonth));
+            });
+        } else {
+            const makeAgnosticBaseUrl: string = "https://www.swapalease.com/lease/search.aspx"
+            urls.push(this.buildUrl(makeAgnosticBaseUrl, location, maxDistance, minMilesPerMonth, maxMonthRemaining, maxPricePerMonth));
+        }
+
+        return urls;
+    }
+
+    private buildUrl(baseUrl: string, location: string,
+                     maxDistance: string, minMilesPerMonth: string,
+                     maxMonthRemaining: string, maxPricePerMonth: string) : string {
+        return baseUrl +
+            `?${location}`+
+            `&${maxDistance}`+
+            `&${minMilesPerMonth}`+
+            `&${maxMonthRemaining}`+
+            `&${maxPricePerMonth}`+
+            `&${this.NEWEST_LISTING_SORT_MODE}`+
+            `&${this.LEASE_TRANSFER_ONLY}`;
     }
 
     /**
