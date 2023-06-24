@@ -1,6 +1,6 @@
 {
-  "name": "@jkon1513/swap-a-lease-client",
-  "version": "1.0.2",
+  "name": "@jkonikow/swap-a-lease-client",
+  "version": "1.0.0",
   "description": "client for scraping swap a lease listings",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jkon1513/SwapALeaseClient.git"
+    "url": "git+https://github.com/jkonikow/SwapALeaseClient.git"
   },
-  "author": "jkon1513",
+  "author": "Jason Konikow",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jkon1513/lease_transfer_monitor/issues"
+    "url": "https://github.com/jkonikow/SwapALeaseClient/issues"
   },
-  "homepage": "https://github.com/jkon1513/lease_transfer_monitor#readme",
+  "homepage": "https://github.com/jkonikow/SwapALeaseClient#readme",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },

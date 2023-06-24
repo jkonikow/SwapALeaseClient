@@ -22,7 +22,6 @@ export default class SwapALeaseClient {
         this.parser = parser ?? new ListingParser();
     }
 
-    //TODO: Can we fetch listings for makes in parallel?
     public async getListings(request: GetListingsRequest): Promise<GetListingsResponse> {
         const urls: string[] = this.buildUrls(request);
         const allHtml: string[] = await Promise.all(urls.map(url => this.fetchHtml(url)));
